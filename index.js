@@ -4,13 +4,14 @@ function chroniton() {
   var margin = {top: 10, right: 20, bottom: 20, left: 20},
     domain = [new Date('1/1/2000'), new Date()],
     width = 760,
+    keybindings = true,
     height = 50,
     labelFormat = d3.time.format("%Y-%m-%d"),
     xScale = d3.time.scale().clamp(true),
     xAxis = d3.svg.axis()
-    .scale(xScale)
-    .orient('bottom')
-    .tickSize(10, 0),
+      .scale(xScale)
+      .orient('bottom')
+      .tickSize(10, 0),
     handleRadius = 6,
     handleHeight = 8,
     caretHeight = 5,
@@ -31,14 +32,25 @@ function chroniton() {
         .domain(domain)
         .range([0, width - margin.left - margin.right]);
 
+      var jumpSize = (+xScale.invert(10) - domain[0]);
+
       brush.x(xScale)
-        .extent(domain)
+        .extent([domain[0], domain[0]])
         .on('brush', brushed);
 
-      var svg = d3.select(this).selectAll('svg').data([0]);
+      var svg = d3.select(this)
+        .selectAll('svg').data([0]);
 
-      var gEnter = svg.enter().append('svg').append('g');
-      gEnter.append('g').attr('class', 'x axis');
+      var gEnter = svg.enter()
+        .append('svg')
+        .attr('class', 'chroniton')
+        .attr('tabindex', 1) // make this element focusable
+        .on('keydown', keydown)
+        .append('g');
+
+      gEnter
+        .append('g')
+        .attr('class', 'x axis');
 
       svg .attr('width', width)
       .attr('height', height);
@@ -83,10 +95,27 @@ function chroniton() {
         slider.classed('brushing', false);
       });
 
-      events.on('set', function(value) {
-        brush.extent([value, value]);
+      function setValue(value) {
+        var v = new Date(Math.min(Math.max(+domain[0], +value), +domain[1]));
+        brush.extent([v, v]);
         brushed();
-      });
+      }
+
+      events.on('set', setValue);
+
+      function keydown() {
+        if (!keybindings) return;
+        // right
+        if (d3.event.which === 39) {
+          setValue(new Date(+brush.extent()[0] + jumpSize));
+          d3.event.preventDefault();
+        }
+        // left
+        if (d3.event.which === 37) {
+          setValue(new Date(+brush.extent()[0] - jumpSize));
+          d3.event.preventDefault();
+        }
+      }
 
       function brushed() {
         var value = brush.extent()[0];
@@ -96,7 +125,9 @@ function chroniton() {
           brush.extent([value, value]);
         }
 
-        handle.attr('transform', function(d) { return 'translate(' + [xScale(value), 0] + ')'; });
+        handle.attr('transform', function(d) {
+          return 'translate(' + [xScale(value), 0] + ')';
+        });
 
         labelText
           .text(labelFormat(value))
@@ -163,6 +194,11 @@ function chroniton() {
 
   chart.setValue = function(_) {
     events.set(_);
+    return chart;
+  };
+
+  chart.keybindings = function(_) {
+    keybindings = _;
     return chart;
   };
 
