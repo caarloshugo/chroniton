@@ -4,7 +4,7 @@ module.exports = chroniton;
 function chroniton() {
   var margin = {top: 10, right: 20, bottom: 20, left: 20},
     domain = [new Date('1/1/2000'), new Date()],
-    width = 760,
+    width = 660,
     keybindings = true,
     height = 50,
     labelFormat = d3.time.format("%Y-%m-%d"),

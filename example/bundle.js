@@ -5578,10 +5578,13 @@ d3_time.scale.utc = function() {
 var d3 = require('d3');
 var chroniton = require('../');
 
+
+d3.select(document.body).append('h3').text('Defaults');
 d3.select(document.body)
     .append('div')
     .call(chroniton());
 
+d3.select(document.body).append('h3').text('Custom Label Format');
 d3.select(document.body)
     .append('div')
     .call(
@@ -5589,6 +5592,7 @@ d3.select(document.body)
         .labelFormat(d3.time.format('%b %e'))
         .width(500));
 
+d3.select(document.body).append('h3').text('Specifying the date Domain');
 d3.select(document.body)
     .append('div')
     .call(
@@ -5597,6 +5601,7 @@ d3.select(document.body)
         .labelFormat(d3.time.format('%X'))
         .width(500));
 
+d3.select(document.body).append('h3').text('Using axis.ticks');
 d3.select(document.body)
     .append('div')
     .call(
@@ -5606,6 +5611,7 @@ d3.select(document.body)
         .tapAxis(function(axis) { axis.ticks(5); })
         .width(200));
 
+d3.select(document.body).append('h3').text('Short timespan');
 d3.select(document.body)
     .append('div')
     .call(
@@ -5615,11 +5621,12 @@ d3.select(document.body)
         .tapAxis(function(axis) { axis.ticks(5); })
         .width(200));
 
+d3.select(document.body).append('h3').text('No label');
 var eventExample = chroniton()
   .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
   .hideLabel()
   .tapAxis(function(axis) { axis.ticks(5); })
-  .width(700);
+  .width(600);
 
 d3.select(document.body)
     .append('div')
@@ -5632,6 +5639,7 @@ eventExample.on('change', function(v) {
   output.text(v);
 });
 
+d3.select(document.body).append('h3').text('Setting the value programmatically');
 var setValueExample = chroniton()
   .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
   .width(700);
@@ -5654,7 +5662,7 @@ module.exports = chroniton;
 function chroniton() {
   var margin = {top: 10, right: 20, bottom: 20, left: 20},
     domain = [new Date('1/1/2000'), new Date()],
-    width = 760,
+    width = 660,
     keybindings = true,
     height = 50,
     labelFormat = d3.time.format("%Y-%m-%d"),
