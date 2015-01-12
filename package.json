@@ -1,0 +1,26 @@
+{
+  "name": "chroniton",
+  "version": "1.0.0",
+  "description": "a timeline and time selector component",
+  "main": "index.js",
+  "scripts": {
+    "start": "watchify example/index.js -o example/bundle.js & st -nc"
+  },
+  "keywords": [
+    "date",
+    "range",
+    "input",
+    "timeline"
+  ],
+  "author": "Tom MacWright",
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "^8.1.0",
+    "st": "^0.5.2",
+    "tape": "^3.0.3",
+    "watchify": "^2.2.1"
+  },
+  "dependencies": {
+    "d3": "^3.5.3"
+  }
+}
