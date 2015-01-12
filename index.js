@@ -5,6 +5,7 @@ function chroniton() {
   domain = [new Date('1/1/2000'), new Date()],
   width = 760,
   height = 60,
+  labelMargin = 15,
   labelFormat = d3.time.format("%Y-%m-%d"),
   xScale = d3.time.scale().clamp(true),
   xAxis = d3.svg.axis()
@@ -41,7 +42,7 @@ function chroniton() {
 
       var slider = g.append('g')
         .attr('class', 'slider')
-        .attr('transform', 'translate(' + [0, height - margin.bottom - margin.top - 10] + ')')
+        .attr('transform', 'translate(' + [0, height - margin.bottom - margin.top - 11] + ')')
         .call(brush);
 
       var handle = slider.append('path')
@@ -78,18 +79,18 @@ function chroniton() {
         labelText.text(labelFormat(value));
         var textLength = labelText.node().getComputedTextLength();
 
-        if ((textLength + xScale(value) + 20) > width - margin.left) {
+        if ((textLength + xScale(value) + labelMargin) > width - margin.left) {
           labelText
           .attr('text-anchor', 'end')
           .attr('transform', function(d) {
-            return 'translate(' + [xScale(value) - 20, 20] + ')';
+            return 'translate(' + [xScale(value) - labelMargin, 20] + ')';
           });
         } else {
           // to the right
           labelText
           .attr('text-anchor', 'start')
           .attr('transform', function(d) {
-            return 'translate(' + [xScale(value) + 20, 20] + ')';
+            return 'translate(' + [xScale(value) + labelMargin, 20] + ')';
           });
         }
       }

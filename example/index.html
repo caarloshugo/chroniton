@@ -17,14 +17,18 @@ body {
   fill: steelblue;
 }
 .slider .handle {
-  fill: #fff;
-  stroke: #000;
-  stroke-opacity: .5;
-  stroke-width: 1.25px;
-  cursor: crosshair;
+  fill: #95a5a6;
+  cursor: move;
+  cursor: -webkit-grab;
+  transition:fill 200ms ease-in-out;
+}
+.handle:active {
+  cursor: move;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
 }
 .slider.brushing .handle {
-  fill: #eee;
+  fill: #222;
 }
 .label {
   font:bold 12px sans-serif;
