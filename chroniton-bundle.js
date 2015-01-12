@@ -1,77 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/tmcw/src/chroniton/example/index.js":[function(require,module,exports){
-var d3 = require('d3');
-var chroniton = require('../');
-
-d3.select(document.body)
-    .append('div')
-    .call(chroniton());
-
-d3.select(document.body)
-    .append('div')
-    .call(
-      chroniton()
-        .labelFormat(d3.time.format('%b %e'))
-        .width(500));
-
-d3.select(document.body)
-    .append('div')
-    .call(
-      chroniton()
-        .domain([new Date(+new Date() - 60 * 1000), new Date()])
-        .labelFormat(d3.time.format('%X'))
-        .width(500));
-
-d3.select(document.body)
-    .append('div')
-    .call(
-      chroniton()
-        .domain([new Date(+new Date() - 60 * 1000), new Date()])
-        .labelFormat(d3.time.format('%X'))
-        .tapAxis(function(axis) { axis.ticks(5); })
-        .width(200));
-
-d3.select(document.body)
-    .append('div')
-    .call(
-      chroniton()
-        .domain([new Date(+new Date() - 60 * 1000), new Date()])
-        .labelFormat(d3.time.format('%X'))
-        .tapAxis(function(axis) { axis.ticks(5); })
-        .width(200));
-
-var eventExample = chroniton()
-  .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
-  .hideLabel()
-  .tapAxis(function(axis) { axis.ticks(5); })
-  .width(700);
-
-d3.select(document.body)
-    .append('div')
-    .call(eventExample);
-
-var output = d3.select(document.body)
-    .append('pre');
-
-eventExample.on('change', function(v) {
-  output.text(v);
-});
-
-var setValueExample = chroniton()
-  .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
-  .width(700);
-
-d3.select(document.body)
-    .append('div')
-    .call(setValueExample);
-
-d3.select(document.body)
-  .append('button')
-  .text('set value')
-  .on('click', function() {
-    setValueExample.setValue(new Date(+new Date() - 60 * 1000 * 500));
-  });
-
-},{"../":"/Users/tmcw/src/chroniton/index.js","d3":"/Users/tmcw/src/chroniton/node_modules/d3/d3.js"}],"/Users/tmcw/src/chroniton/index.js":[function(require,module,exports){
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var n;"undefined"!=typeof window?n=window:"undefined"!=typeof global?n=global:"undefined"!=typeof self&&(n=self),n.chroniton=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var d3 = require('d3');
 module.exports = chroniton;
 
@@ -282,7 +209,7 @@ function chroniton() {
   return bound;
 }
 
-},{"d3":"/Users/tmcw/src/chroniton/node_modules/d3/d3.js"}],"/Users/tmcw/src/chroniton/node_modules/d3/d3.js":[function(require,module,exports){
+},{"d3":2}],2:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.3"
@@ -9749,4 +9676,5 @@ function chroniton() {
   if (typeof define === "function" && define.amd) define(d3); else if (typeof module === "object" && module.exports) module.exports = d3;
   this.d3 = d3;
 }();
-},{}]},{},["/Users/tmcw/src/chroniton/example/index.js"]);
+},{}]},{},[1])(1)
+});

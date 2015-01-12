@@ -1,5 +1,3 @@
-var d3 = require('d3');
-module.exports = chroniton;
 
 function chroniton() {
   var margin = {top: 10, right: 20, bottom: 20, left: 20},

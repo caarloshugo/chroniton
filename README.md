@@ -9,6 +9,24 @@ A time slider input for time-based visualizations and data.
 * APIs for setting and retrieving time data
 * Keybindings for navigating with ← and →
 
+## Installation
+
+The most recommended technique is to use [browserify](http://browserify.org/)
+and use `var chroniton = require('chroniton')` to get the library.
+
+```sh
+$ npm install --save chroniton
+```
+
+Otherwise, download `chroniton-bundle.js` for chroniton **with d3 included**,
+or `chroniton-only.js` if you already are included d3 on your page as a global
+variable. Use the latter, for instance, if you have a script-tag
+include like `<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>`.
+You'll need to copy these files to your server.
+
+There's an example of the necessary CSS to style chroniton
+in `chroniton-example.css`.
+
 ## API
 
 This follows the [d3 reusable charts](http://bost.ocks.org/mike/chart/) pattern

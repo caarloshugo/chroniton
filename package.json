@@ -4,7 +4,8 @@
   "description": "a timeline and time selector component",
   "main": "index.js",
   "scripts": {
-    "start": "watchify example/index.js -o example/bundle.js & st -nc"
+    "start": "watchify example/index.js -o example/bundle.js & st -nc",
+    "bundle": "browserify -s chroniton index.js > chroniton-bundle.js && tail -n +3 index.js > chroniton-only.js"
   },
   "keywords": [
     "date",
