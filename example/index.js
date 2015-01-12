@@ -9,6 +9,7 @@ d3.select(document.body)
     .append('div')
     .call(
       chroniton()
+        .labelFormat(d3.time.format('%b %e'))
         .width(500));
 
 d3.select(document.body)
