@@ -1,18 +1,28 @@
 var d3 = require('d3');
 
 function chroniton() {
-  var margin = {top: 20, right: 20, bottom: 20, left: 20},
-  domain = [new Date('1/1/2000'), new Date()],
-  width = 760,
-  height = 60,
-  labelFormat = d3.time.format("%Y-%m-%d"),
-  xScale = d3.time.scale().clamp(true),
-  xAxis = d3.svg.axis()
+  var margin = {top: 10, right: 20, bottom: 20, left: 20},
+    domain = [new Date('1/1/2000'), new Date()],
+    width = 760,
+    height = 50,
+    labelFormat = d3.time.format("%Y-%m-%d"),
+    xScale = d3.time.scale().clamp(true),
+    xAxis = d3.svg.axis()
     .scale(xScale)
     .orient('bottom')
-    .tickSize(10, 0);
-
-  var events = d3.dispatch('change');
+    .tickSize(10, 0),
+    handleRadius = 6,
+    handleHeight = 8,
+    caretHeight = 5,
+    d = [
+      -handleRadius, -handleHeight,
+      handleRadius, -handleHeight,
+      handleRadius, handleHeight - caretHeight,
+      0, handleHeight,
+      -handleRadius, handleHeight - caretHeight,
+      -handleRadius, -handleHeight],
+    brush = d3.svg.brush(),
+    events = d3.dispatch('change', 'set');
 
   function chart(selection) {
     selection.each(function() {
@@ -21,8 +31,7 @@ function chroniton() {
         .domain(domain)
         .range([0, width - margin.left - margin.right]);
 
-      var brush = d3.svg.brush()
-        .x(xScale)
+      brush.x(xScale)
         .extent(domain)
         .on('brush', brushed);
 
@@ -41,25 +50,17 @@ function chroniton() {
         .attr('transform', 'translate(0,' + (height - margin.bottom - margin.top) + ')')
         .call(xAxis);
 
+      var domainNode = g.select('.x.axis .domain')
+        .remove()
+        .node();
+
+      var axisNode = g.select('.x.axis').node();
+      axisNode.insertBefore(domainNode, axisNode.childNodes[0]);
+
       var slider = g.append('g')
         .attr('class', 'slider')
-        .attr('transform', 'translate(' + [0, height - margin.bottom - margin.top] + ')')
+        .attr('transform', 'translate(' + [0, height - margin.bottom - margin.top + 2] + ')')
         .call(brush);
-
-      var handleRadius = 6,
-        handleHeight = 8,
-        caretHeight = 6;
-
-      var d = [
-        // top
-        -handleRadius, -handleHeight,
-        handleRadius, -handleHeight,
-
-        handleRadius, handleHeight - caretHeight,
-        0, handleHeight,
-        -handleRadius, handleHeight - caretHeight,
-
-        -handleRadius, -handleHeight];
 
       var handle = slider.append('path')
         .attr('d', 'M' + d.join(','))
@@ -82,6 +83,11 @@ function chroniton() {
         slider.classed('brushing', false);
       });
 
+      events.on('set', function(value) {
+        brush.extent([value, value]);
+        brushed();
+      });
+
       function brushed() {
         var value = brush.extent()[0];
 
@@ -92,18 +98,21 @@ function chroniton() {
 
         handle.attr('transform', function(d) { return 'translate(' + [xScale(value), 0] + ')'; });
 
-        labelText.text(labelFormat(value)).attr('text-anchor', 'middle');
-        var textRadius = labelText.node().getComputedTextLength() / 2;
+        labelText
+          .text(labelFormat(value))
+          .attr('text-anchor', 'middle');
+
+        var textRadius = labelText.node().getComputedTextLength() / 2,
+          leftEdge = xScale(value) - textRadius,
+          rightEdge = xScale(value) + textRadius;
+
         labelText.attr('transform', function(d) {
           return 'translate(' + [xScale(value), 20] + ')';
         });
-        var leftEdge = xScale(value) - textRadius;
-        var rightEdge = xScale(value) + textRadius;
 
         if (leftEdge < 0) {
           labelText.attr('text-anchor', 'start');
         } else if (rightEdge > width - margin.left) {
-          // to the right
           labelText.attr('text-anchor', 'end');
         }
 
@@ -152,7 +161,14 @@ function chroniton() {
     return chart;
   };
 
-  return d3.rebind(chart, events, 'on');
+  chart.setValue = function(_) {
+    events.set(_);
+    return chart;
+  };
+
+  var bound = d3.rebind(chart, events, 'on');
+
+  return bound;
 }
 
 module.exports = chroniton;

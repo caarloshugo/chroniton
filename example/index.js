@@ -38,11 +38,34 @@ d3.select(document.body)
         .tapAxis(function(axis) { axis.ticks(5); })
         .width(200));
 
+var eventExample = chroniton()
+  .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+  .hideLabel()
+  .tapAxis(function(axis) { axis.ticks(5); })
+  .width(700);
+
 d3.select(document.body)
     .append('div')
-    .call(
-      chroniton()
-        .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
-        .hideLabel()
-        .tapAxis(function(axis) { axis.ticks(5); })
-        .width(700));
+    .call(eventExample);
+
+var output = d3.select(document.body)
+    .append('pre');
+
+eventExample.on('change', function(v) {
+  output.text(v);
+});
+
+var setValueExample = chroniton()
+  .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+  .width(700);
+
+d3.select(document.body)
+    .append('div')
+    .call(setValueExample);
+
+d3.select(document.body)
+  .append('button')
+  .text('set value')
+  .on('click', function() {
+    setValueExample.setValue(new Date(+new Date() - 60 * 1000 * 500));
+  });

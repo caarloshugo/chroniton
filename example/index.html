@@ -7,6 +7,9 @@
 body {
   font: 10px sans-serif;
 }
+pre {
+    font-size:20px;
+}
 .axis path,
 .axis line {
   fill: none;
@@ -19,20 +22,21 @@ body {
   stroke:#ddd;
 }
 .tick line {
-  display:none;
-}
-.area {
-  fill: steelblue;
+  stroke:#d0d0d0;
+  stroke-width:2;
+  transform:translate(0px, -5px);
 }
 .slider .handle {
   fill: #fff;
   stroke-width:1;
   stroke:#333;
+}
+.slider .handle, .slider text {
   cursor: move;
   cursor: -webkit-grab;
   transition:fill 200ms ease-in-out;
 }
-.handle:active {
+.handle:active, .slider text:active {
   cursor: move;
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
