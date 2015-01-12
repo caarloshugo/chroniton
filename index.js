@@ -5,13 +5,14 @@ function chroniton() {
   domain = [new Date('1/1/2000'), new Date()],
   width = 760,
   height = 60,
-  labelMargin = 15,
   labelFormat = d3.time.format("%Y-%m-%d"),
   xScale = d3.time.scale().clamp(true),
   xAxis = d3.svg.axis()
     .scale(xScale)
     .orient('bottom')
-    .tickSize(6, 0);
+    .tickSize(10, 0);
+
+  var events = d3.dispatch('change');
 
   function chart(selection) {
     selection.each(function() {
@@ -42,15 +43,30 @@ function chroniton() {
 
       var slider = g.append('g')
         .attr('class', 'slider')
-        .attr('transform', 'translate(' + [0, height - margin.bottom - margin.top - 11] + ')')
+        .attr('transform', 'translate(' + [0, height - margin.bottom - margin.top] + ')')
         .call(brush);
 
+      var handleRadius = 6,
+        handleHeight = 8,
+        caretHeight = 6;
+
+      var d = [
+        // top
+        -handleRadius, -handleHeight,
+        handleRadius, -handleHeight,
+
+        handleRadius, handleHeight - caretHeight,
+        0, handleHeight,
+        -handleRadius, handleHeight - caretHeight,
+
+        -handleRadius, -handleHeight];
+
       var handle = slider.append('path')
-        .attr('d', 'M -10,-10, 10,-10, 10,2, 0,10, -10,2, -10,-10')
+        .attr('d', 'M' + d.join(','))
         .attr('class', 'handle');
 
       var textG = slider.append('g')
-        .attr('transform', 'translate(0, -20)');
+        .attr('transform', 'translate(0, -35)');
 
       var labelText = textG
         .append('text')
@@ -76,23 +92,22 @@ function chroniton() {
 
         handle.attr('transform', function(d) { return 'translate(' + [xScale(value), 0] + ')'; });
 
-        labelText.text(labelFormat(value));
-        var textLength = labelText.node().getComputedTextLength();
+        labelText.text(labelFormat(value)).attr('text-anchor', 'middle');
+        var textRadius = labelText.node().getComputedTextLength() / 2;
+        labelText.attr('transform', function(d) {
+          return 'translate(' + [xScale(value), 20] + ')';
+        });
+        var leftEdge = xScale(value) - textRadius;
+        var rightEdge = xScale(value) + textRadius;
 
-        if ((textLength + xScale(value) + labelMargin) > width - margin.left) {
-          labelText
-          .attr('text-anchor', 'end')
-          .attr('transform', function(d) {
-            return 'translate(' + [xScale(value) - labelMargin, 20] + ')';
-          });
-        } else {
+        if (leftEdge < 0) {
+          labelText.attr('text-anchor', 'start');
+        } else if (rightEdge > width - margin.left) {
           // to the right
-          labelText
-          .attr('text-anchor', 'start')
-          .attr('transform', function(d) {
-            return 'translate(' + [xScale(value) + labelMargin, 20] + ')';
-          });
+          labelText.attr('text-anchor', 'end');
         }
+
+        events.change(value);
       }
     });
   }
@@ -137,7 +152,7 @@ function chroniton() {
     return chart;
   };
 
-  return chart;
+  return d3.rebind(chart, events, 'on');
 }
 
 module.exports = chroniton;

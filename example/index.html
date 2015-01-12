@@ -13,11 +13,21 @@ body {
   stroke: #000;
   shape-rendering: crispEdges;
 }
+.x.axis path {
+  stroke-width:10;
+  stroke-linecap:round;
+  stroke:#ddd;
+}
+.tick line {
+  display:none;
+}
 .area {
   fill: steelblue;
 }
 .slider .handle {
-  fill: #95a5a6;
+  fill: #fff;
+  stroke-width:1;
+  stroke:#333;
   cursor: move;
   cursor: -webkit-grab;
   transition:fill 200ms ease-in-out;
@@ -28,7 +38,7 @@ body {
   cursor: -webkit-grabbing;
 }
 .slider.brushing .handle {
-  fill: #222;
+  fill: #eee;
 }
 .label {
   font:bold 12px sans-serif;
