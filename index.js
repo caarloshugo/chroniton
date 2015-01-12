@@ -1,4 +1,4 @@
-var d3 = require('d3');
+var d3 = require('./d3-custom.js');
 module.exports = chroniton;
 
 function chroniton() {
@@ -126,7 +126,7 @@ function chroniton() {
       function brushed() {
         var value = brush.extent()[0];
 
-        if (d3.event.sourceEvent) { // not a programmatic event
+        if (d3.event && d3.event.sourceEvent) { // not a programmatic event
           value = xScale.invert(d3.mouse(this)[0]);
           brush.extent([value, value]);
         }

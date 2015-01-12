@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "watchify example/index.js -o example/bundle.js & st -nc",
-    "bundle": "browserify -s chroniton index.js > chroniton-bundle.js && tail -n +3 index.js > chroniton-only.js"
+    "make-d3": "smash `cat d3-requirements` > d3-custom.js",
+    "bundle": "browserify -s chroniton index.js | uglifyjs -c -m > chroniton-bundle.js && tail -n +3 index.js > chroniton-only.js"
   },
   "keywords": [
     "date",
@@ -17,8 +18,10 @@
   "license": "ISC",
   "devDependencies": {
     "browserify": "^8.1.0",
+    "smash": "0.0.14",
     "st": "^0.5.2",
     "tape": "^3.0.3",
+    "uglify-js": "^2.4.16",
     "watchify": "^2.2.1"
   },
   "dependencies": {
