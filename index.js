@@ -70,6 +70,11 @@ function chroniton() {
       var axisNode = g.select('.x.axis').node();
       axisNode.insertBefore(domainNode, axisNode.childNodes[0]);
 
+      g.select('.x.axis .domain')
+        .on('click', function() {
+          setValue(xScale.invert(d3.mouse(this)[0]));
+        });
+
       var slider = g.append('g')
         .attr('class', 'slider')
         .attr('transform', 'translate(' + [0, height - margin.bottom - margin.top + 2] + ')')

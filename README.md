@@ -134,3 +134,13 @@ d3.select(document.body)
 
 Set the value of the input to a given `Date` object, redraw it, and fire
 a `change` event.
+
+# Development
+
+    $ git clone git@github.com:tmcw/chroniton.git
+    $ npm install
+
+Run `npm start` to rebuild the source and start a development server on
+`localhost:1337`. There's a testing page at `example/index.html`.
+
+Run `npm run bundle` to regenerate the bundle and standalone files.
