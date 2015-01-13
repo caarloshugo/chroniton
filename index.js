@@ -1,4 +1,4 @@
-var d3 = require('./d3-custom.js');
+var d3 = require('./d3/d3-custom.js');
 module.exports = chroniton;
 
 function chroniton() {
@@ -137,21 +137,21 @@ function chroniton() {
 
         labelText
           .text(labelFormat(value))
-          .attr('text-anchor', 'middle');
+          .attr('text-anchor', 'left');
 
         var textRadius = labelText.node().getComputedTextLength() / 2,
           leftEdge = xScale(value) - textRadius,
           rightEdge = xScale(value) + textRadius;
 
         labelText.attr('transform', function(d) {
-          return 'translate(' + [xScale(value), 20] + ')';
+          if (leftEdge < -margin.left) {
+            return 'translate(' + [-margin.left, 20] + ')';
+          } else if (rightEdge > width - margin.left) {
+            return 'translate(' + [width - margin.left - textRadius * 2, 20] + ')';
+          } else {
+            return 'translate(' + [xScale(value) - textRadius, 20] + ')';
+          }
         });
-
-        if (leftEdge < 0) {
-          labelText.attr('text-anchor', 'start');
-        } else if (rightEdge > width - margin.left) {
-          labelText.attr('text-anchor', 'end');
-        }
 
         events.change(value);
       }

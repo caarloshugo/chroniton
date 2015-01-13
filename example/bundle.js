@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/tmcw/src/chroniton/d3-custom.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/tmcw/src/chroniton/d3/d3-custom.js":[function(require,module,exports){
 !function(){
   var d3 = {version: "3.5.3"}; // semver
 var d3_arraySlice = [].slice,
@@ -5656,7 +5656,7 @@ d3.select(document.body)
   });
 
 },{"../":"/Users/tmcw/src/chroniton/index.js","d3":"/Users/tmcw/src/chroniton/node_modules/d3/d3.js"}],"/Users/tmcw/src/chroniton/index.js":[function(require,module,exports){
-var d3 = require('./d3-custom.js');
+var d3 = require('./d3/d3-custom.js');
 module.exports = chroniton;
 
 function chroniton() {
@@ -5795,21 +5795,21 @@ function chroniton() {
 
         labelText
           .text(labelFormat(value))
-          .attr('text-anchor', 'middle');
+          .attr('text-anchor', 'left');
 
         var textRadius = labelText.node().getComputedTextLength() / 2,
           leftEdge = xScale(value) - textRadius,
           rightEdge = xScale(value) + textRadius;
 
         labelText.attr('transform', function(d) {
-          return 'translate(' + [xScale(value), 20] + ')';
+          if (leftEdge < -margin.left) {
+            return 'translate(' + [-margin.left, 20] + ')';
+          } else if (rightEdge > width - margin.left) {
+            return 'translate(' + [width - margin.left - textRadius * 2, 20] + ')';
+          } else {
+            return 'translate(' + [xScale(value) - textRadius, 20] + ')';
+          }
         });
-
-        if (leftEdge < 0) {
-          labelText.attr('text-anchor', 'start');
-        } else if (rightEdge > width - margin.left) {
-          labelText.attr('text-anchor', 'end');
-        }
 
         events.change(value);
       }
@@ -5871,7 +5871,7 @@ function chroniton() {
   return bound;
 }
 
-},{"./d3-custom.js":"/Users/tmcw/src/chroniton/d3-custom.js"}],"/Users/tmcw/src/chroniton/node_modules/d3/d3.js":[function(require,module,exports){
+},{"./d3/d3-custom.js":"/Users/tmcw/src/chroniton/d3/d3-custom.js"}],"/Users/tmcw/src/chroniton/node_modules/d3/d3.js":[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.3"
