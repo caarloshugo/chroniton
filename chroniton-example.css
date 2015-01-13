@@ -13,14 +13,19 @@
   -moz-user-select:none;
   user-select:none;
 }
-.x.axis path {
+.x.axis path.domain {
   stroke-width:10;
   stroke-linecap:round;
   stroke:#ddd;
 }
+.x.axis path.halo {
+  stroke-width:12;
+  stroke-linecap:round;
+  stroke:#ccc;
+}
 .tick line {
   stroke:#d0d0d0;
-  stroke-width:2;
+  stroke-width:1;
   transform:translate(0px, -5px);
 }
 .slider .handle {
