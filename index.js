@@ -27,6 +27,9 @@ function chroniton() {
     events = d3.dispatch('change', 'set');
 
   function chart(selection) {
+
+    if (selection instanceof HTMLElement) selection = d3.select(selection);
+
     selection.each(function() {
 
       xScale

@@ -5655,6 +5655,11 @@ d3.select(document.body)
     setValueExample.setValue(new Date(+new Date() - 60 * 1000 * 500));
   });
 
+d3.select(document.body).append('h3').text('Created without using a d3 selection');
+
+var div = document.body.appendChild(document.createElement('div'));
+chroniton()(div);
+
 },{"../":"/Users/tmcw/src/chroniton/index.js","d3":"/Users/tmcw/src/chroniton/node_modules/d3/d3.js"}],"/Users/tmcw/src/chroniton/index.js":[function(require,module,exports){
 var d3 = require('./d3/d3-custom.js');
 module.exports = chroniton;
@@ -5685,6 +5690,9 @@ function chroniton() {
     events = d3.dispatch('change', 'set');
 
   function chart(selection) {
+
+    if (selection instanceof HTMLElement) selection = d3.select(selection);
+
     selection.each(function() {
 
       xScale

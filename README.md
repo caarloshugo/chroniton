@@ -46,9 +46,14 @@ method or called directly as `chroniton()(selection)`.
 **Example**
 
 ```js
+// using d3
 d3.select(document.body)
     .append('div')
     .call(chroniton());
+
+// or not using d3
+var div = document.body.appendChild(document.createElement('div'));
+chroniton()(div);
 ```
 
 ### `.domain([start, end])`

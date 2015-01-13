@@ -77,3 +77,8 @@ d3.select(document.body)
   .on('click', function() {
     setValueExample.setValue(new Date(+new Date() - 60 * 1000 * 500));
   });
+
+d3.select(document.body).append('h3').text('Created without using a d3 selection');
+
+var div = document.body.appendChild(document.createElement('div'));
+chroniton()(div);
