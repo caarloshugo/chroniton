@@ -2,7 +2,7 @@
 function chroniton() {
   var margin = {top: 10, right: 20, bottom: 20, left: 20},
     domain = [new Date('1/1/2000'), new Date()],
-    width = 760,
+    width = 660,
     keybindings = true,
     height = 50,
     labelFormat = d3.time.format("%Y-%m-%d"),
@@ -124,7 +124,7 @@ function chroniton() {
       function brushed() {
         var value = brush.extent()[0];
 
-        if (d3.event.sourceEvent) { // not a programmatic event
+        if (d3.event && d3.event.sourceEvent) { // not a programmatic event
           value = xScale.invert(d3.mouse(this)[0]);
           brush.extent([value, value]);
         }

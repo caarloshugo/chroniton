@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "watchify example/index.js -o example/bundle.js & st -nc",
-    "make-d3": "smash `cat d3-requirements` > d3-custom.js",
+    "make-d3": "smash `cat d3/d3-requirements` > d3/d3-custom.js",
     "bundle": "browserify -s chroniton index.js | uglifyjs -c -m > chroniton-bundle.js && tail -n +3 index.js > chroniton-only.js"
   },
   "keywords": [
