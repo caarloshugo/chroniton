@@ -5834,7 +5834,8 @@ function chroniton() {
       function brushed() {
         var value = brush.extent()[0];
 
-        if (d3.event && d3.event.sourceEvent) { // not a programmatic event
+        if (d3.event && d3.event.sourceEvent &&
+            d3.event.sourceEvent.type !== 'keydown') { // not a programmatic event
           value = xScale.invert(d3.mouse(this)[0]);
           brush.extent([value, value]);
         }
