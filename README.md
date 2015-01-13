@@ -135,10 +135,19 @@ d3.select(document.body)
     .on('change', function(d) { alert(d); }));
 ```
 
-### `.setValue(Date object)`
+### `.setValue(Date object, transition?)`
 
 Set the value of the input to a given `Date` object, redraw it, and fire
 a `change` event.
+
+The `transition` argument, by default `false`, is whether the timeline
+should smoothly transition between the current date and the given date.
+If it's true, it'll transition with default options. Otherwise, you can
+give an object with options:
+
+* `duration`: how long the transition will take
+* `ease`: [a d3 easing function](https://github.com/mbostock/d3/wiki/Transitions#d3_ease)
+  given by name, like "linear"
 
 # Development
 

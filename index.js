@@ -24,7 +24,7 @@ function chroniton() {
       -handleRadius, handleHeight - caretHeight,
       -handleRadius, -handleHeight],
     brush = d3.svg.brush(),
-    events = d3.dispatch('change', 'set');
+    events = d3.dispatch('change', 'setValue');
 
   function chart(selection) {
 
@@ -104,13 +104,19 @@ function chroniton() {
         slider.classed('brushing', false);
       });
 
-      function setValue(value) {
+      function setValue(value, transition) {
         var v = new Date(Math.min(Math.max(+domain[0], +value), +domain[1]));
-        brush.extent([v, v]);
-        brushed();
+        var s = slider;
+        if (transition) {
+          s = slider.transition();
+          if (transition.ease) s.ease(transition.ease);
+          if (transition.duration) s.duration(transition.duration);
+        }
+        s.call(brush.extent([v, v]))
+            .call(brush.event);
       }
 
-      events.on('set', setValue);
+      events.on('setValue', setValue);
 
       function keydown() {
         if (!keybindings) return;
@@ -201,8 +207,8 @@ function chroniton() {
     return chart;
   };
 
-  chart.setValue = function(_) {
-    events.set(_);
+  chart.setValue = function(_, transition) {
+    events.setValue(_, transition);
     return chart;
   };
 

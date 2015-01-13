@@ -66,11 +66,9 @@ d3.select(document.body).append('h3').text('Setting the value programmatically')
 var setValueExample = chroniton()
   .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
   .width(700);
-
 d3.select(document.body)
     .append('div')
     .call(setValueExample);
-
 d3.select(document.body)
   .append('button')
   .text('set value')
@@ -78,7 +76,41 @@ d3.select(document.body)
     setValueExample.setValue(new Date(+new Date() - 60 * 1000 * 500));
   });
 
-d3.select(document.body).append('h3').text('Created without using a d3 selection');
+(function() {
+d3.select(document.body).append('h3').text('Setting the value programmatically with a transition');
+var setValueExample2 = chroniton()
+  .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+  .width(700);
+d3.select(document.body)
+    .append('div')
+    .call(setValueExample2);
+d3.select(document.body)
+  .append('button')
+  .text('set value')
+  .on('click', function() {
+    setValueExample2.setValue(new Date(+new Date() - 60 * 1000 * 500), true);
+  });
+})();
 
+(function() {
+d3.select(document.body).append('h3').text('Setting the value programmatically with transition options');
+var setValueExample2 = chroniton()
+  .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+  .width(700);
+d3.select(document.body)
+    .append('div')
+    .call(setValueExample2);
+d3.select(document.body)
+  .append('button')
+  .text('set value')
+  .on('click', function() {
+    setValueExample2.setValue(new Date(+new Date() - 60 * 1000 * 500), {
+      duration: 5000,
+      ease: 'linear'
+    });
+  });
+})();
+
+d3.select(document.body).append('h3').text('Created without using a d3 selection');
 var div = document.body.appendChild(document.createElement('div'));
 chroniton()(div);

@@ -5643,11 +5643,9 @@ d3.select(document.body).append('h3').text('Setting the value programmatically')
 var setValueExample = chroniton()
   .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
   .width(700);
-
 d3.select(document.body)
     .append('div')
     .call(setValueExample);
-
 d3.select(document.body)
   .append('button')
   .text('set value')
@@ -5655,8 +5653,42 @@ d3.select(document.body)
     setValueExample.setValue(new Date(+new Date() - 60 * 1000 * 500));
   });
 
-d3.select(document.body).append('h3').text('Created without using a d3 selection');
+(function() {
+d3.select(document.body).append('h3').text('Setting the value programmatically with a transition');
+var setValueExample2 = chroniton()
+  .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+  .width(700);
+d3.select(document.body)
+    .append('div')
+    .call(setValueExample2);
+d3.select(document.body)
+  .append('button')
+  .text('set value')
+  .on('click', function() {
+    setValueExample2.setValue(new Date(+new Date() - 60 * 1000 * 500), true);
+  });
+})();
 
+(function() {
+d3.select(document.body).append('h3').text('Setting the value programmatically with transition options');
+var setValueExample2 = chroniton()
+  .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+  .width(700);
+d3.select(document.body)
+    .append('div')
+    .call(setValueExample2);
+d3.select(document.body)
+  .append('button')
+  .text('set value')
+  .on('click', function() {
+    setValueExample2.setValue(new Date(+new Date() - 60 * 1000 * 500), {
+      duration: 5000,
+      ease: 'linear'
+    });
+  });
+})();
+
+d3.select(document.body).append('h3').text('Created without using a d3 selection');
 var div = document.body.appendChild(document.createElement('div'));
 chroniton()(div);
 
@@ -5687,7 +5719,7 @@ function chroniton() {
       -handleRadius, handleHeight - caretHeight,
       -handleRadius, -handleHeight],
     brush = d3.svg.brush(),
-    events = d3.dispatch('change', 'set');
+    events = d3.dispatch('change', 'setValue');
 
   function chart(selection) {
 
@@ -5767,13 +5799,19 @@ function chroniton() {
         slider.classed('brushing', false);
       });
 
-      function setValue(value) {
+      function setValue(value, transition) {
         var v = new Date(Math.min(Math.max(+domain[0], +value), +domain[1]));
-        brush.extent([v, v]);
-        brushed();
+        var s = slider;
+        if (transition) {
+          s = slider.transition();
+          if (transition.ease) s.ease(transition.ease);
+          if (transition.duration) s.duration(transition.duration);
+        }
+        s.call(brush.extent([v, v]))
+            .call(brush.event);
       }
 
-      events.on('set', setValue);
+      events.on('setValue', setValue);
 
       function keydown() {
         if (!keybindings) return;
@@ -5864,8 +5902,8 @@ function chroniton() {
     return chart;
   };
 
-  chart.setValue = function(_) {
-    events.set(_);
+  chart.setValue = function(_, transition) {
+    events.setValue(_, transition);
     return chart;
   };
 
