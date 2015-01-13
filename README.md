@@ -169,9 +169,22 @@ value changes.
 
 Pause playing, keeping the playhead in its current place.
 
+### `.playButton(true or false)`
+
+Set whether to show a play / pause button on the input. Clicking the
+button plays or pauses.
+
+### `.playPause()`
+
+Toggles chart between playing and pausing status.
+
 ### `.stop()`
 
 Pause playing and return the playhead to the beginning.
+
+### `.isPlaying()`
+
+Returns a `boolean` for whether the control is currently playing.
 
 ### `.loop(true or false)`
 

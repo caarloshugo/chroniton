@@ -2,6 +2,9 @@
   font: 10px sans-serif;
   outline:none;
 }
+.chroniton .play-button {
+  fill:#444;
+}
 .axis path,
 .axis line {
   fill: none;

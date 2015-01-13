@@ -8,6 +8,7 @@ function chroniton() {
     keybindings = true,
     height = 50,
     play = false,
+    playButton = false,
     loop = false,
     playLastTick = null,
     playbackRate = 1,
@@ -20,13 +21,30 @@ function chroniton() {
     handleRadius = 6,
     handleHeight = 8,
     caretHeight = 5,
-    d = [
+    handleD = 'M' + [
       -handleRadius, -handleHeight,
       handleRadius, -handleHeight,
       handleRadius, handleHeight - caretHeight,
       0, handleHeight,
       -handleRadius, handleHeight - caretHeight,
-      -handleRadius, -handleHeight],
+      -handleRadius, -handleHeight].join(','),
+    playWidth = 10,
+    playD = 'M' + [
+      0, 0,
+      playWidth/1.2, playWidth/2,
+      0, playWidth,
+      0, 0].join(','),
+    pauseD = 'M' + [
+      0, 0,
+      playWidth/3, 0,
+      playWidth/3, playWidth,
+      0, playWidth
+    ].join(',') + 'Z M' + [
+      (playWidth / 2) + 0, 0,
+      (playWidth / 2) + playWidth/3, 0,
+      (playWidth / 2) + playWidth/3, playWidth,
+      (playWidth / 2) + 0, playWidth
+    ].join(','),
     brush = d3.svg.brush(),
     events = d3.dispatch('change', 'setValue');
 
@@ -35,6 +53,10 @@ function chroniton() {
     if (selection instanceof HTMLElement) selection = d3.select(selection);
 
     selection.each(function() {
+
+      if (playButton) {
+        margin.left = 30;
+      }
 
       xScale
         .domain(domain)
@@ -86,13 +108,31 @@ function chroniton() {
           setValue(xScale.invert(d3.mouse(this)[0]));
         });
 
+      if (playButton) {
+        var playButtonG = svg.append('g')
+          .attr('transform', 'translate(' + [8, margin.top + 13] + ')');
+        var playIcon = playButtonG.append('path')
+          .attr('transform', 'translate(2, 2)')
+          .attr('d', playD)
+          .attr('class', 'play-button');
+        var playRect = playButtonG.append('rect')
+          .attr('fill', 'none')
+          .attr('pointer-events', 'visible')
+          .attr('width', 15)
+          .attr('height', 15)
+          .on('click', function() {
+            chart.playPause();
+            playIcon.attr('d', chart.playing() ? pauseD : playD);
+          });
+      }
+
       var slider = g.append('g')
         .attr('class', 'slider')
         .attr('transform', 'translate(' + [0, height - margin.bottom - margin.top + 2] + ')')
         .call(brush);
 
       var handle = slider.append('path')
-        .attr('d', 'M' + d.join(','))
+        .attr('d', handleD)
         .attr('class', 'handle');
 
       var textG = slider.append('g')
@@ -200,6 +240,16 @@ function chroniton() {
     return chart;
   };
 
+  chart.playing = function() {
+    return play;
+  };
+
+  chart.playPause = function() {
+    if (play) chart.pause();
+    else chart.play();
+    return chart;
+  };
+
   chart.pause = function() {
     playLastTick = null;
     play = false;
@@ -216,12 +266,6 @@ function chroniton() {
     if (!arguments.length) return loop;
     if (typeof _ !== 'boolean') throw new Error('argument must be a boolean for whether to loop');
     loop = _;
-    return chart;
-  };
-
-  chart.margin = function(_) {
-    if (!arguments.length) return margin;
-    margin = _;
     return chart;
   };
 
@@ -279,8 +323,15 @@ function chroniton() {
     return chart;
   };
 
+  chart.playButton = function(_) {
+    if (_ === undefined) return playButton;
+    if (typeof _ !== 'boolean') throw new Error('argument must be a boolean setting');
+    playButton = _;
+    return chart;
+  };
 
   chart.keybindings = function(_) {
+    if (_ === undefined) return keybindings;
     if (typeof _ !== 'boolean') throw new Error('argument must be a boolean setting');
     keybindings = _;
     return chart;

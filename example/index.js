@@ -24,6 +24,19 @@ d3.select(document.body)
         .labelFormat(d3.time.format('%X'))
         .width(500));
 
+(function() {
+d3.select(document.body).append('h3').text('Play button');
+d3.select(document.body)
+    .append('div')
+    .call(
+      chroniton()
+        .domain([new Date(+new Date() - 60 * 1000), new Date()])
+        .labelFormat(d3.time.format('%X'))
+        .playButton(true)
+        .width(400));
+})();
+
+(function() {
 d3.select(document.body).append('h3').text('Using axis.ticks');
 d3.select(document.body)
     .append('div')
@@ -33,6 +46,7 @@ d3.select(document.body)
         .labelFormat(d3.time.format('%X'))
         .tapAxis(function(axis) { axis.ticks(5); })
         .width(200));
+})();
 
 d3.select(document.body).append('h3').text('Short timespan');
 d3.select(document.body)
