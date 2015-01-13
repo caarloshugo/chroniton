@@ -5,7 +5,8 @@ A time slider input for time-based visualizations and data.
 ## Features
 
 * Customizable label formatting
-* Smart label position for current time
+* API and UI for playing & pausing time
+* Smart label position for current value
 * APIs for setting and retrieving time data
 * Touch-compatible for phones and such
 * Keybindings for navigating with ← and →
