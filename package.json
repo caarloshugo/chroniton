@@ -1,6 +1,6 @@
 {
   "name": "chroniton",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "a timeline and time selector component",
   "main": "index.js",
   "scripts": {
