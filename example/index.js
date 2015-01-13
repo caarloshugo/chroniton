@@ -111,6 +111,17 @@ d3.select(document.body)
   });
 })();
 
+(function() {
+d3.select(document.body).append('h3').text('Styling with CSS');
+var setValueExample2 = chroniton()
+  .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+  .width(700);
+d3.select(document.body)
+    .append('div')
+    .attr('class', 'theme-example')
+    .call(setValueExample2);
+})();
+
 d3.select(document.body).append('h3').text('Created without using a d3 selection');
 var div = document.body.appendChild(document.createElement('div'));
 chroniton()(div);
