@@ -150,6 +150,34 @@ give an object with options:
 * `ease`: [a d3 easing function](https://github.com/mbostock/d3/wiki/Transitions#d3_ease)
   given by name, like "linear"
 
+### `.isAtEnd()` & `.isAtStart()`
+
+Return a boolean `true` or `false` value for whether the input is at the beginning
+or end of its permitted date range.
+
+### `.playbackRate(number)`
+
+Set the playback rate multiplier. The default is for the slider to move at 10px
+per second: this will change that by a given multiplier.
+
+### `.play()`
+
+Start playing: this animates the slider and emits `change` events as its
+value changes.
+
+### `.pause()`
+
+Pause playing, keeping the playhead in its current place.
+
+### `.stop()`
+
+Pause playing and return the playhead to the beginning.
+
+### `.loop(true or false)`
+
+By default `loop` is set to `false`. You can call this function so that when
+you call `.play()` the input loops once it hits the end rather than stopping.
+
 # Development
 
     $ git clone git@github.com:tmcw/chroniton.git

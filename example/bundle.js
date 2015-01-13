@@ -5699,6 +5699,48 @@ d3.select(document.body)
     .call(setValueExample2);
 })();
 
+(function() {
+d3.select(document.body).append('h3').text('calling .play()');
+d3.select(document.body)
+    .append('div')
+    .attr('class', 'theme-example')
+    .call(chroniton()
+      .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+      .width(700).play());
+})();
+
+(function() {
+d3.select(document.body).append('h3').text('calling .play() with .loop(true)');
+d3.select(document.body)
+    .append('div')
+    .attr('class', 'theme-example')
+    .call(chroniton()
+      .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+      .width(700).loop(true).play());
+})();
+
+
+(function() {
+d3.select(document.body).append('h3').text('calling .play(), .pause(), and .stop() with buttons');
+var c = chroniton()
+   .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+   .width(700).loop(true);
+d3.select(document.body)
+    .append('div')
+    .attr('class', 'theme-example')
+    .call(c);
+
+d3.select(document.body)
+    .append('button').text('play').on('click', function() { c.play(); });
+
+d3.select(document.body)
+    .append('button').text('pause').on('click', function() { c.pause(); });
+
+d3.select(document.body)
+    .append('button').text('stop').on('click', function() { c.stop(); });
+
+})();
+
 d3.select(document.body).append('h3').text('Created without using a d3 selection');
 var div = document.body.appendChild(document.createElement('div'));
 chroniton()(div);
@@ -5713,6 +5755,10 @@ function chroniton() {
     width = 660,
     keybindings = true,
     height = 50,
+    play = false,
+    loop = false,
+    playLastTick = null,
+    playbackRate = 1,
     labelFormat = d3.time.format("%Y-%m-%d"),
     xScale = d3.time.scale().clamp(true),
     xAxis = d3.svg.axis()
@@ -5878,6 +5924,49 @@ function chroniton() {
     });
   }
 
+  function ticker() {
+    if (!play) return;
+    var now = new Date().getTime();
+    if (playLastTick === null) playLastTick = now;
+    var playSinceLastTick = now - playLastTick,
+      tenthPx = (+xScale.invert(0.1) - +domain[0]) * playbackRate,
+      jumpSize = playSinceLastTick * tenthPx;
+    chart.setValue(new Date(+brush.extent()[0] + jumpSize));
+    playLastTick = now;
+    if (loop && chart.isAtEnd()) chart.setValue(domain[0]);
+  }
+
+  chart.playbackRate = function(_) {
+    if (!arguments.length) return playbackRate;
+    if (typeof _ !== 'number') throw new Error('argument must be a number of pixels per second');
+    playbackRate = _;
+    return chart;
+  };
+
+  chart.play = function() {
+    play = true;
+    return chart;
+  };
+
+  chart.pause = function() {
+    playLastTick = null;
+    play = false;
+    return chart;
+  };
+
+  chart.stop = function() {
+    chart.pause();
+    chart.setValue(domain[0]);
+    return chart;
+  };
+
+  chart.loop = function(_) {
+    if (!arguments.length) return loop;
+    if (typeof _ !== 'boolean') throw new Error('argument must be a boolean for whether to loop');
+    loop = _;
+    return chart;
+  };
+
   chart.margin = function(_) {
     if (!arguments.length) return margin;
     margin = _;
@@ -5892,11 +5981,13 @@ function chroniton() {
 
   chart.tapAxis = function(_) {
     _(xAxis);
+    if (typeof _ !== 'function') throw new Error('argument must be a function');
     return chart;
   };
 
   chart.height = function(_) {
     if (!arguments.length) return height;
+    if (typeof _ !== 'number') throw new Error('argument must be a numeric width');
     height = _;
     return chart;
   };
@@ -5908,7 +5999,8 @@ function chroniton() {
   };
 
   chart.labelFormat = function(_) {
-    if (!arguments.length) return labelFormat;
+    if (!_) return labelFormat;
+    if (typeof _ !== 'function') throw new Error('argument must be a label formatter function');
     labelFormat = _;
     return chart;
   };
@@ -5918,16 +6010,31 @@ function chroniton() {
     return chart;
   };
 
+  chart.getValue = function() {
+    return brush.extent()[0];
+  };
+
+  chart.isAtStart = function() {
+    return +brush.extent()[0] === +domain[0];
+  };
+
+  chart.isAtEnd = function() {
+    return +brush.extent()[0] === +domain[1];
+  };
+
   chart.setValue = function(_, transition) {
     events.setValue(_, transition);
     return chart;
   };
 
+
   chart.keybindings = function(_) {
+    if (typeof _ !== 'boolean') throw new Error('argument must be a boolean setting');
     keybindings = _;
     return chart;
   };
 
+  var timer = d3.timer(ticker);
   var bound = d3.rebind(chart, events, 'on');
 
   return bound;

@@ -122,6 +122,48 @@ d3.select(document.body)
     .call(setValueExample2);
 })();
 
+(function() {
+d3.select(document.body).append('h3').text('calling .play()');
+d3.select(document.body)
+    .append('div')
+    .attr('class', 'theme-example')
+    .call(chroniton()
+      .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+      .width(700).play());
+})();
+
+(function() {
+d3.select(document.body).append('h3').text('calling .play() with .loop(true)');
+d3.select(document.body)
+    .append('div')
+    .attr('class', 'theme-example')
+    .call(chroniton()
+      .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+      .width(700).loop(true).play());
+})();
+
+
+(function() {
+d3.select(document.body).append('h3').text('calling .play(), .pause(), and .stop() with buttons');
+var c = chroniton()
+   .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+   .width(700).loop(true);
+d3.select(document.body)
+    .append('div')
+    .attr('class', 'theme-example')
+    .call(c);
+
+d3.select(document.body)
+    .append('button').text('play').on('click', function() { c.play(); });
+
+d3.select(document.body)
+    .append('button').text('pause').on('click', function() { c.pause(); });
+
+d3.select(document.body)
+    .append('button').text('stop').on('click', function() { c.stop(); });
+
+})();
+
 d3.select(document.body).append('h3').text('Created without using a d3 selection');
 var div = document.body.appendChild(document.createElement('div'));
 chroniton()(div);
