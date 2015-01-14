@@ -152,6 +152,8 @@ give an object with options:
 * `ease`: [a d3 easing function](https://github.com/mbostock/d3/wiki/Transitions#d3_ease)
   given by name, like "linear"
 
+## Playback
+
 ### `.isAtEnd()` & `.isAtStart()`
 
 Return a boolean `true` or `false` value for whether the input is at the beginning
@@ -192,6 +194,20 @@ Returns a `boolean` for whether the control is currently playing.
 
 By default `loop` is set to `false`. You can call this function so that when
 you call `.play()` the input loops once it hits the end rather than stopping.
+
+## Aligned Charts
+
+### `.getMargin()`
+
+Get the [conventional margins](http://bl.ocks.org/mbostock/3019563) used by
+this instance as an object. The object is copied, so changes to it do not affect
+the instance's local version.
+
+### `.getScale()`
+
+Get the instance's [d3.time.scale](https://github.com/mbostock/d3/wiki/Time-Scales)
+so you can use it in linked visualizations. The scale is copied, so changes
+to it are not propagated to the instance.
 
 # Development
 
