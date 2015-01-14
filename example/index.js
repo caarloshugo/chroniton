@@ -126,6 +126,68 @@ d3.select(document.body)
 })();
 
 (function() {
+d3.select(document.body).append('h3').text('Aligned Chart');
+
+var scaleExample = chroniton()
+  .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])
+  .hideLabel()
+  .width(700);
+
+var margin = scaleExample.getMargin();
+margin.bottom = 0;
+margin.top = 50;
+var height = 30;
+var width = scaleExample.width();
+var x = scaleExample.getScale();
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var data = [];
+
+
+for (var t = +scaleExample.domain()[0]; t <= scaleExample.domain()[1]; t += 1000 * 1000) {
+  data.push({ n: Math.random(), date: new Date(t) });
+}
+
+y.domain([0, d3.max(data, function(d) { return d.n; })]);
+
+var area = d3.svg.area()
+    .x(function(d) { return x(d.date); })
+    .y0(height)
+    .y1(function(d) { return y(d.n); })
+    .interpolate('step-before');
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("path")
+    .datum(data)
+    .attr("class", "area")
+    .attr("d", area);
+
+var label = svg.append("text").attr('text-anchor', 'middle');
+var connector = svg.append("rect").attr('width', 2);
+
+var bisect = d3.bisector(function(d) { return d.date; }).left;
+scaleExample.on('change', function(d) {
+  var datum = data[bisect(data, d)];
+  label
+    .attr('transform', 'translate(' + [x(d), -10] + ')')
+    .text(datum.n.toFixed(3));
+  connector
+    .attr('transform', 'translate(' + [x(d) - 1, -5] + ')')
+    .attr('height', y(datum.n) + 3);
+});
+
+d3.select(document.body)
+    .append('div')
+    .call(scaleExample);
+})();
+
+(function() {
 d3.select(document.body).append('h3').text('Styling with CSS');
 var setValueExample2 = chroniton()
   .domain([new Date(+new Date() - 60 * 1000 * 1000), new Date()])

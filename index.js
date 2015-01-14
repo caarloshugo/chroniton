@@ -9,6 +9,7 @@ function chroniton() {
     height = 50,
     play = false,
     playButton = false,
+    noLabel = false,
     loop = false,
     playLastTick = null,
     playbackRate = 1,
@@ -48,6 +49,7 @@ function chroniton() {
     brush = d3.svg.brush(),
     events = d3.dispatch('change', 'setValue');
 
+
   function chart(selection) {
 
     if (selection instanceof HTMLElement) selection = d3.select(selection);
@@ -56,6 +58,10 @@ function chroniton() {
 
       if (playButton) {
         margin.left = 30;
+      }
+
+      if (noLabel) {
+        margin.top = 0;
       }
 
       xScale
@@ -272,6 +278,9 @@ function chroniton() {
   chart.width = function(_) {
     if (!arguments.length) return width;
     width = _;
+    xScale
+      .domain(domain)
+      .range([0, width - margin.left - margin.right]);
     return chart;
   };
 
@@ -291,18 +300,27 @@ function chroniton() {
   chart.domain = function(_) {
     if (!arguments.length) return domain;
     domain = _;
+    xScale
+     .domain(domain)
+     .range([0, width - margin.left - margin.right]);
     return chart;
   };
 
   chart.labelFormat = function(_) {
     if (!_) return labelFormat;
     if (typeof _ !== 'function') throw new Error('argument must be a label formatter function');
+    noLabel = false;
+    margin.top = 10;
+    height = 50;
     labelFormat = _;
     return chart;
   };
 
   chart.hideLabel = function() {
     labelFormat = d3.functor('');
+    noLabel = true;
+    margin.top = 0;
+    height = 27;
     return chart;
   };
 
@@ -316,6 +334,14 @@ function chroniton() {
 
   chart.isAtEnd = function() {
     return +brush.extent()[0] === +domain[1];
+  };
+
+  chart.getScale = function() {
+    return xScale.copy();
+  };
+
+  chart.getMargin = function() {
+    return JSON.parse(JSON.stringify(margin));
   };
 
   chart.setValue = function(_, transition) {
