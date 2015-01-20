@@ -1,6 +1,7 @@
 var d3 = require('d3');
 var chroniton = require('../');
 
+require('./run.js');
 
 d3.select(document.body).append('h3').text('Defaults');
 d3.select(document.body)

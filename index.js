@@ -1,74 +1,74 @@
 var d3 = require('./d3/d3-custom.js');
 module.exports = chroniton;
 
+var handleRadius = 6,
+  handleHeight = 8,
+  caretHeight = 5,
+  handleD = 'M' + [
+    -handleRadius, -handleHeight,
+    handleRadius, -handleHeight,
+    handleRadius, handleHeight - caretHeight,
+    0, handleHeight,
+    -handleRadius, handleHeight - caretHeight,
+    -handleRadius, -handleHeight].join(','),
+  playWidth = 10,
+  playD = 'M' + [
+    0, 0,
+    playWidth/1.2, playWidth/2,
+    0, playWidth,
+    0, 0].join(','),
+  pauseD = 'M' + [
+    0, 0,
+    playWidth/3, 0,
+    playWidth/3, playWidth,
+    0, playWidth
+  ].join(',') + 'Z M' + [
+    (playWidth / 2) + 0, 0,
+    (playWidth / 2) + playWidth/3, 0,
+    (playWidth / 2) + playWidth/3, playWidth,
+    (playWidth / 2) + 0, playWidth
+  ].join(',');
+
 function chroniton() {
   var margin = {top: 10, right: 20, bottom: 20, left: 20},
     domain = [new Date('1/1/2000'), new Date()],
     width = 660,
-    keybindings = true,
     height = 50,
-    play = false,
+
+    // configurable options
+    keybindings = true,
     playButton = false,
+    play = false,
     noLabel = false,
     loop = false,
-    playLastTick = null,
     playbackRate = 1,
+
+    // internal state
+    playLastTick = null,
+
     labelFormat = d3.time.format("%Y-%m-%d"),
+
+    // scales
     xScale = d3.time.scale().clamp(true),
     xAxis = d3.svg.axis()
       .scale(xScale)
       .orient('bottom')
       .tickSize(10, 0),
-    handleRadius = 6,
-    handleHeight = 8,
-    caretHeight = 5,
-    handleD = 'M' + [
-      -handleRadius, -handleHeight,
-      handleRadius, -handleHeight,
-      handleRadius, handleHeight - caretHeight,
-      0, handleHeight,
-      -handleRadius, handleHeight - caretHeight,
-      -handleRadius, -handleHeight].join(','),
-    playWidth = 10,
-    playD = 'M' + [
-      0, 0,
-      playWidth/1.2, playWidth/2,
-      0, playWidth,
-      0, 0].join(','),
-    pauseD = 'M' + [
-      0, 0,
-      playWidth/3, 0,
-      playWidth/3, playWidth,
-      0, playWidth
-    ].join(',') + 'Z M' + [
-      (playWidth / 2) + 0, 0,
-      (playWidth / 2) + playWidth/3, 0,
-      (playWidth / 2) + playWidth/3, playWidth,
-      (playWidth / 2) + 0, playWidth
-    ].join(','),
+
     brush = d3.svg.brush(),
     events = d3.dispatch('change', 'setValue');
-
 
   function chart(selection) {
 
     if (selection instanceof HTMLElement) selection = d3.select(selection);
 
     selection.each(function() {
-
-      if (playButton) {
-        margin.left = 30;
-      }
-
-      if (noLabel) {
-        margin.top = 0;
-      }
+      if (playButton) { margin.left = 30; }
+      if (noLabel) { margin.top = 0; }
 
       xScale
         .domain(domain)
         .range([0, width - margin.left - margin.right]);
-
-      var jumpSize = (+xScale.invert(10) - domain[0]);
 
       brush.x(xScale)
         .extent([domain[0], domain[0]])
@@ -152,9 +152,7 @@ function chroniton() {
 
       brush.on('brushstart', function() {
         slider.classed('brushing', true);
-      });
-
-      brush.on('brushend', function() {
+      }).on('brushend', function() {
         slider.classed('brushing', false);
       });
 
@@ -171,20 +169,6 @@ function chroniton() {
       }
 
       events.on('setValue', setValue);
-
-      function keydown() {
-        if (!keybindings) return;
-        // right
-        if (d3.event.which === 39) {
-          setValue(new Date(+brush.extent()[0] + jumpSize));
-          d3.event.preventDefault();
-        }
-        // left
-        if (d3.event.which === 37) {
-          setValue(new Date(+brush.extent()[0] - jumpSize));
-          d3.event.preventDefault();
-        }
-      }
 
       function brushed() {
         var value = brush.extent()[0];
@@ -222,16 +206,33 @@ function chroniton() {
     });
   }
 
+  function jumpSize() { return +xScale.invert(10) - domain[0]; }
+
   function ticker() {
     if (!play) return;
     var now = new Date().getTime();
     if (playLastTick === null) playLastTick = now;
     var playSinceLastTick = now - playLastTick,
       tenthPx = (+xScale.invert(0.1) - +domain[0]) * playbackRate,
-      jumpSize = playSinceLastTick * tenthPx;
-    chart.setValue(new Date(+brush.extent()[0] + jumpSize));
+      increment = playSinceLastTick * tenthPx;
+    chart.setValue(new Date(+brush.extent()[0] + increment));
     playLastTick = now;
     if (loop && chart.isAtEnd()) chart.setValue(domain[0]);
+  }
+
+  function keydown() {
+    if (!keybindings) return;
+    // right
+    switch (d3.event.which) {
+      case 39:
+        setValue(new Date(+brush.extent()[0] + jumpSize()));
+        d3.event.preventDefault();
+        break;
+      case 37:
+        setValue(new Date(+brush.extent()[0] - jumpSize()));
+        d3.event.preventDefault();
+        break;
+    }
   }
 
   chart.playbackRate = function(_) {

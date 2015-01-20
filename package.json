@@ -4,7 +4,7 @@
   "description": "a timeline and time selector component",
   "main": "index.js",
   "scripts": {
-    "start": "watchify example/index.js -o example/bundle.js & st -nc",
+    "start": "watchify -t brfs example/index.js -o example/bundle.js & st -nc",
     "make-d3": "smash `cat d3/d3-requirements` > d3/d3-custom.js",
     "bundle": "browserify -s chroniton index.js | uglifyjs -c -m > chroniton-bundle.js && tail -n +3 index.js > chroniton-only.js"
   },
@@ -17,10 +17,12 @@
   "author": "Tom MacWright",
   "license": "ISC",
   "devDependencies": {
+    "brfs": "^1.2.0",
     "browserify": "^8.1.0",
     "smash": "0.0.14",
     "st": "^0.5.2",
     "tape": "^3.0.3",
+    "togeojson": "^0.10.1",
     "uglify-js": "^2.4.16",
     "watchify": "^2.2.1"
   },
